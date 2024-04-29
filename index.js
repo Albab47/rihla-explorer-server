@@ -77,6 +77,12 @@ async function run() {
       res.send(result);
     });
 
+    // Delete single spot
+    app.delete("/delete-spot/:id", async(req, res) => {
+        const query = {_id: new ObjectId(req.params.id)}
+        const result = await spotsCollection.deleteOne(query)
+        res.send(result)
+    })
 
 
     // successful connection ping
