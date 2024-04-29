@@ -54,6 +54,31 @@ async function run() {
       res.send(spots);
     });
 
+    // Update single spot
+    app.put("/update-spot/:id", async (req, res) => {
+      const filter = { _id: new ObjectId(req.params.id) };
+      const options = {upsert: true}
+      const spot = req.body;
+      console.log(spot);
+      const updateSpot = {
+        $set : {
+            spotName: spot.spotName,
+            photoURL: spot.photoURL,
+            totalVisitors: spot.totalVisitors,
+            season: spot.season,
+            travelTime: spot.travelTime,
+            avgCost: spot.avgCost,
+            desc: spot.desc,
+            country: spot.country,
+            location: spot.location,
+        },
+      }
+      const result = await spotsCollection.updateOne(filter, updateSpot, options);
+      res.send(result);
+    });
+
+
+
     // successful connection ping
     await client.db("admin").command({ ping: 1 });
     console.log(
