@@ -38,6 +38,13 @@ async function run() {
       res.send(spots);
     });
 
+    // Get single spot
+    app.get("/spots/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const spot = await spotsCollection.findOne(query);
+      res.send(spot);
+    });
+
     // successful connection ping
     await client.db("admin").command({ ping: 1 });
     console.log(
