@@ -31,6 +31,13 @@ async function run() {
       res.send(result);
     });
 
+    // Get all spots
+    app.get("/spots", async (req, res) => {
+      const cursor = spotsCollection.find();
+      const spots = await cursor.toArray();
+      res.send(spots);
+    });
+
     // successful connection ping
     await client.db("admin").command({ ping: 1 });
     console.log(
