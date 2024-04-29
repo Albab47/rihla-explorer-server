@@ -45,6 +45,15 @@ async function run() {
       res.send(spot);
     });
 
+    // Get all user specific spots
+    app.get("/my-list/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const spots = await spotsCollection.find(query).toArray();
+      console.log(spots);
+      res.send(spots);
+    });
+
     // successful connection ping
     await client.db("admin").command({ ping: 1 });
     console.log(
