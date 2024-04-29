@@ -24,7 +24,12 @@ async function run() {
     await client.connect();
     const spotsCollection = client.db("rihlaDB").collection("spots");
 
-    
+    // Add new spot
+    app.post("/spots", async (req, res) => {
+      const newSpot = req.body;
+      const result = await spotsCollection.insertOne(newSpot);
+      res.send(result);
+    });
 
     // successful connection ping
     await client.db("admin").command({ ping: 1 });
