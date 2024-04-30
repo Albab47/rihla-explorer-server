@@ -38,6 +38,30 @@ async function run() {
       const spots = await cursor.toArray();
       res.send(spots);
     });
+    
+    // Get single spot
+    app.get("/spots/:id", async (req, res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) };
+      const spot = await spotsCollection.findOne(query);
+      res.send(spot);
+    });
+
+    // Get Country specific data
+    app.get("/tourist-spots/:country", async (req, res) => {
+      const query = { country: req.params.country };
+      const cursor = spotsCollection.find(query);
+      const spots = await cursor.toArray();
+      res.send(spots);
+    });
+
+
+    // Get all countries data
+    app.get("/countries", async (req, res) => {
+      const cursor = countriesCollection.find();
+      const countries = await cursor.toArray();
+      res.send(countries);
+    });
 
     // Get sorted by avg spots
     app.get("/spots/sort-by-avg", async (req, res) => {
@@ -47,13 +71,6 @@ async function run() {
       })
       console.log(sortedSpots);
       res.send(sortedSpots)
-    });
-
-    // Get single spot
-    app.get("/spots/:id", async (req, res) => {
-      const query = { _id: new ObjectId(req.params.id) };
-      const spot = await spotsCollection.findOne(query);
-      res.send(spot);
     });
 
     // Get all user specific spots
@@ -95,12 +112,6 @@ async function run() {
         res.send(result)
     })
 
-    // Get all countries data
-    app.get("/countries", async (req, res) => {
-      const cursor = countriesCollection.find();
-      const countries = await cursor.toArray();
-      res.send(countries);
-    });
 
 
     // successful connection ping
