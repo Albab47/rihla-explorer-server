@@ -23,6 +23,7 @@ async function run() {
   try {
     await client.connect();
     const spotsCollection = client.db("rihlaDB").collection("spots");
+    const countriesCollection = client.db("rihlaDB").collection("countries");
 
     // Add new spot
     app.post("/spots", async (req, res) => {
@@ -93,6 +94,13 @@ async function run() {
         const result = await spotsCollection.deleteOne(query)
         res.send(result)
     })
+
+    // Get all countries data
+    app.get("/countries", async (req, res) => {
+      const cursor = countriesCollection.find();
+      const countries = await cursor.toArray();
+      res.send(countries);
+    });
 
 
     // successful connection ping
