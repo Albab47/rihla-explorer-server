@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     const spotsCollection = client.db("rihlaDB").collection("spots");
     const countriesCollection = client.db("rihlaDB").collection("countries");
 
@@ -38,10 +38,10 @@ async function run() {
       const spots = await cursor.toArray();
       res.send(spots);
     });
-    
+
     // Get single spot
     app.get("/spots/:id", async (req, res) => {
-      const id = req.params.id
+      const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const spot = await spotsCollection.findOne(query);
       res.send(spot);
@@ -55,7 +55,6 @@ async function run() {
       res.send(spots);
     });
 
-
     // Get all countries data
     app.get("/countries", async (req, res) => {
       const cursor = countriesCollection.find();
@@ -65,12 +64,15 @@ async function run() {
 
     // Get sorted by avg spots
     app.get("/spots/sort-by-avg", async (req, res) => {
-      const sortedSpots = await spotsCollection.find({}).sort({avgCost: 1}).toArray();
+      const sortedSpots = await spotsCollection
+        .find({})
+        .sort({ avgCost: 1 })
+        .toArray();
       const finalSort = sortedSpots.sort((a, b) => {
         return a.avgCost - b.avgCost;
-      })
+      });
       console.log(sortedSpots);
-      res.send(sortedSpots)
+      res.send(sortedSpots);
     });
 
     // Get all user specific spots
@@ -85,40 +87,37 @@ async function run() {
     // Update single spot
     app.put("/update-spot/:id", async (req, res) => {
       const filter = { _id: new ObjectId(req.params.id) };
-      const options = {upsert: true}
+      const options = { upsert: true };
       const spot = req.body;
       console.log(spot);
       const updateSpot = {
-        $set : {
-            spotName: spot.spotName,
-            photoURL: spot.photoURL,
-            totalVisitors: spot.totalVisitors,
-            season: spot.season,
-            travelTime: spot.travelTime,
-            avgCost: spot.avgCost,
-            desc: spot.desc,
-            country: spot.country,
-            location: spot.location,
+        $set: {
+          spotName: spot.spotName,
+          photoURL: spot.photoURL,
+          totalVisitors: spot.totalVisitors,
+          season: spot.season,
+          travelTime: spot.travelTime,
+          avgCost: spot.avgCost,
+          desc: spot.desc,
+          country: spot.country,
+          location: spot.location,
         },
-      }
-      const result = await spotsCollection.updateOne(filter, updateSpot, options);
+      };
+      const result = await spotsCollection.updateOne(
+        filter,
+        updateSpot,
+        options
+      );
       res.send(result);
     });
 
     // Delete single spot
-    app.delete("/delete-spot/:id", async(req, res) => {
-        const query = {_id: new ObjectId(req.params.id)}
-        const result = await spotsCollection.deleteOne(query)
-        res.send(result)
-    })
+    app.delete("/delete-spot/:id", async (req, res) => {
+      const query = { _id: new ObjectId(req.params.id) };
+      const result = await spotsCollection.deleteOne(query);
+      res.send(result);
+    });
 
-
-
-    // successful connection ping
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -128,7 +127,7 @@ run().catch(console.dir);
 
 // Testing route
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.send("Express on vercel");
 });
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
