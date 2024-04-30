@@ -38,6 +38,16 @@ async function run() {
       res.send(spots);
     });
 
+    // Get sorted by avg spots
+    app.get("/spots/sort-by-avg", async (req, res) => {
+      const sortedSpots = await spotsCollection.find({}).sort({avgCost: 1}).toArray();
+      const finalSort = sortedSpots.sort((a, b) => {
+        return a.avgCost - b.avgCost;
+      })
+      console.log(sortedSpots);
+      res.send(sortedSpots)
+    });
+
     // Get single spot
     app.get("/spots/:id", async (req, res) => {
       const query = { _id: new ObjectId(req.params.id) };
